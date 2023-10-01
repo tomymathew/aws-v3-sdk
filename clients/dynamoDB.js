@@ -1,4 +1,3 @@
-
 const DocumentClient = require('./dynamo/DocumentClient')
 
 class DynamoDB {
