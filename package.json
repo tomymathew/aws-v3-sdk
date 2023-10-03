@@ -11,5 +11,8 @@
     "url": "git@tomymathew:tomymathew/aws-v3-sdk.git"
   },
   "author": "tomy mathew",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@opensearch-project/opensearch": "^2.3.1"
+  }
 }

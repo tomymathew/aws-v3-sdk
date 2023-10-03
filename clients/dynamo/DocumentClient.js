@@ -1,4 +1,4 @@
-const { DynamoDB, DynamoDBClient, BatchGetItemCommand } = require('@aws-sdk/client-dynamodb')
+const { DynamoDB, DynamoDBClient } = require('@aws-sdk/client-dynamodb')
 const { DynamoDBDocument, DynamoDBDocumentClient, GetCommand, BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb')
 const ddb = new DynamoDBClient()
 const documentClient = DynamoDBDocumentClient.from(ddb)
@@ -43,6 +43,13 @@ class DocumentClient {
   }
 
   put (params, callback) {
+    let item = params.Item
+    try {
+      item = Object.fromEntries(Object.entries(item).filter(([key, value]) => value !== undefined))
+    } catch (error) {
+
+    }
+    params.Item = item
     const putCommand = new PutCommand(params)
     documentClient.send(putCommand, (err, response) => {
       if (err || !response) {
@@ -53,6 +60,17 @@ class DocumentClient {
   }
 
   delete (params, callback) {
+    const docClient = DynamoDBDocument.from(new DynamoDB())
+    docClient.delete(params, (err, response) => {
+      if (err) {
+        return callback(err)
+      } else {
+        return callback(null, response)
+      }
+    })
+  }
+
+  deletev3 (params, callback) {
     const putCommand = new DeleteCommand(params)
     documentClient.send(putCommand, (err, response) => {
       if (err) {
