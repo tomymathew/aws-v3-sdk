@@ -44,6 +44,7 @@ exports.sendReqToES = async (method, index, type, id, data) => {
     const response = await client.index({
       id,
       index,
+      type,
       body: data,
       refresh: true
 
