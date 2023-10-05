@@ -1,12 +1,11 @@
 const { STSClient, AssumeRoleCommand } = require('@aws-sdk/client-sts')
 
 class STS {
-  constructor (AWS_REGION) {
-    this.client = new STSClient({ region: AWS_REGION })
+  constructor ({ region }) {
+    this.client = new STSClient({ region })
   }
 
   assumeRole (params, callback) {
-    console.log('params', params)
     const command = new AssumeRoleCommand(params)
     this.client.send(command).then(role => {
       return callback(null, role)
