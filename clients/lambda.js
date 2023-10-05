@@ -11,11 +11,6 @@ class Lambda {
   }
 
   async invoke (params, callback) {
-    if (params.Payload) {
-      params.InvokeArgs = fromUtf8(params.Payload)
-      delete params.Payload
-    }
-
     const command = new InvokeCommand(params)
     this.client.send(command).then(response => {
       response.Payload = toUtf8(response.Payload)
