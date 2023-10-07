@@ -2,7 +2,7 @@ const { Client, Connection } = require('@opensearch-project/opensearch')
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const aws4 = require('aws4')
 
-const { AWS_REGION, ELASTICSEARCH_ENDPOINT } = process.env
+const { REGION, ELASTICSEARCH_ENDPOINT } = process.env
 const host = 'https://' + ELASTICSEARCH_ENDPOINT
 
 const createAwsConnector = (credentials, region) => {
@@ -23,19 +23,22 @@ const createAwsConnector = (credentials, region) => {
 
 const getClient = async () => {
   const credentials = await defaultProvider()()
-  const cred = createAwsConnector(credentials, AWS_REGION)
+  const cred = createAwsConnector(credentials, REGION)
   return new Client({
     ...cred,
     node: host
   })
 }
 
-exports.sendGetRequest = async (index, query, from, size, sort) => {
+exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
   const client = await getClient()
   return new Promise((resolve, reject) => {
     client.search({
       index,
-      body: { query }
+      from,
+      size,
+      _source,
+      body: { query, sort }
     }).then(response => {
       const data = response.body.hits.hits
       const totalCount = response.body.hits.total

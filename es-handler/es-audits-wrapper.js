@@ -2,7 +2,7 @@ const { Client, Connection } = require('@opensearch-project/opensearch')
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const aws4 = require('aws4')
 
-const { AWS_REGION, ELASTICSEARCH_AUDITS_ENDPOINT } = process.env
+const { REGION, ELASTICSEARCH_AUDITS_ENDPOINT } = process.env
 
 const host = 'https://' + ELASTICSEARCH_AUDITS_ENDPOINT
 
@@ -24,7 +24,7 @@ const createAwsConnector = (credentials, region) => {
 
 const getClient = async () => {
   const credentials = await defaultProvider()()
-  const cred = createAwsConnector(credentials, AWS_REGION)
+  const cred = createAwsConnector(credentials, REGION)
   return new Client({
     ...cred,
     node: host
