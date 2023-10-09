@@ -32,23 +32,35 @@ const getClient = async () => {
 }
 
 exports.sendReqToES = async (method, index, type, id, data) => {
-  const client = await getClient()
-  if (method === 'DELETE') {
-    const response = await client.delete({
-      index,
-      type,
-      id
-    })
-    return response.body
-  } else {
-    const response = await client.index({
-      id,
-      index,
-      type,
-      body: data,
-      refresh: true
-
-    })
-    return response.body
+  try {
+    const client = await getClient()
+    if (method === 'DELETE') {
+      const response = await client.delete({
+        index,
+        type,
+        id
+      })
+      return response.body
+    } else if (method === 'UPDATE') {
+      const response = await client.update({
+        id,
+        index,
+        type,
+        body: data,
+        refresh: true
+      })
+      return response.body
+    } else {
+      const response = await client.index({
+        id,
+        index,
+        type,
+        body: data,
+        refresh: true
+      })
+      return response.body
+    }
+  } catch (error) {
+    return error
   }
 }
