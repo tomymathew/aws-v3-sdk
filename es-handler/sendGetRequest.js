@@ -33,12 +33,16 @@ const getClient = async () => {
 exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
   const client = await getClient()
   return new Promise((resolve, reject) => {
+    let body = { query }
+    if (sort) {
+      body = { query, sort }
+    }
     client.search({
       index,
       from,
       size,
       _source,
-      body: { query, sort }
+      body
     }).then(response => {
       const data = response.body.hits.hits
       const totalCount = response.body.hits.total
