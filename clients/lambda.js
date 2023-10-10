@@ -19,6 +19,28 @@ class Lambda {
       callback(err)
     })
   }
+
+  invokeAsync (params, callback) {
+    return new Promise((resolve, reject) => {
+      const command = new InvokeCommand(params)
+      this.client.send(command).then(response => {
+        response.Payload = toUtf8(response.Payload)
+        resolve(response)
+      }).catch(err => {
+        resolve(err)
+      })
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
 }
 
 module.exports = Lambda
