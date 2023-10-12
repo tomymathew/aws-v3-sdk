@@ -55,3 +55,62 @@ exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
     })
   })
 }
+
+exports.sendGetRequestCallback = async (index, query, from, size, sort, callback) => {
+  const client = await getClient()
+  return new Promise((resolve, reject) => {
+    let body = { query }
+    if (sort) {
+      body = { query, sort }
+    }
+    client.search({
+      index,
+      from,
+      size,
+      body
+    }).then(response => {
+      const data = response.body.hits.hits
+      const totalCount = response.body.hits.total
+      const mappedData = data.map(item => {
+        return item._source
+      })
+      callback(null, { items: mappedData, data: mappedData, totalCount })
+    }).catch(e => {
+      callback(null, { items: [], data: [], totalCount: 0 })
+    })
+  })
+}
+
+exports.getCount = async (index, query) => {
+  const client = await getClient()
+  return new Promise((resolve, reject) => {
+    client.count({
+      index,
+      body: { query }
+    }).then(response => {
+      const data = response.body
+      resolve({ data })
+    }).catch(e => {
+      console.log(e);
+      resolve({ })
+    })
+  })
+}
+
+exports.multiSearch = async (query) => {
+  const client = await getClient()
+  return new Promise((resolve, reject) => {
+    let body = query 
+    client.msearch({
+      body
+    }).then(response => {
+      resolve(response);
+    }).catch(e => {
+      console.log(e);
+      resolve({ items: [], data: [], totalCount: 0 })
+    })
+  })
+}
+
+
+

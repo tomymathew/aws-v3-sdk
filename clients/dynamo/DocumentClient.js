@@ -81,7 +81,12 @@ class DocumentClient {
   }
 
   update (params, callback) {
-    const docClient = DynamoDBDocument.from(new DynamoDB())
+    const options = {
+      marshallOptions: {
+        removeUndefinedValues: true
+      }
+    }
+    const docClient = DynamoDBDocument.from(ddb, options)
     docClient.update(params, (err, response) => {
       if (err) {
         return callback(err)
