@@ -4,5 +4,7 @@ module.exports = {
   EnvironmentCredentials: require('./credential'),
   S3: require('./s3'),
   STS: require('./sts'),
+  SQS: require('./sqs'),
+  SNS: require('./sns'),
   CognitoIdentityServiceProvider: require('./cognito')
 }
