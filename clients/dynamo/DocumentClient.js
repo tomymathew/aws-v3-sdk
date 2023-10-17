@@ -167,6 +167,33 @@ class DocumentClient {
     })
   }
 
+  scanAsync (params, callback) {
+    return new Promise((resolve, reject) => {
+      const getCommand = new ScanCommand(params)
+      documentClient.send(getCommand, (err, response) => {
+        if (err || !response) {
+          return ScanCommand(err)
+        }
+        if (response.Items) {
+          return resolve(response)
+        } else if (!response.Items) {
+          return resolve(null)
+        }
+      })
+      
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
+
   putAsync (params, callback) {
     return new Promise((resolve, reject) => {
       let item = params.Item
