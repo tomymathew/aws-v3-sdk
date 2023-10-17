@@ -241,6 +241,53 @@ class DocumentClient {
       return Promise.reject(error)
     })
   }
+
+
+  batchGetAsync (params, callback) {
+    return new Promise((resolve, reject) => {
+      const docClient = DynamoDBDocument.from(new DynamoDB())
+      docClient.batchGet(params, function (err, data) {
+        if (err) reject(err)
+        else {
+          return resolve(response)
+        }
+      })
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
+
+  batchWriteAsync (params, callback) {
+    return new Promise((resolve, reject) => {
+      const command = new BatchWriteCommand(params)
+      documentClient.send(command, (err, response) => {
+        if (err || !response) {
+          return reject(err)
+        }
+        if (response) {
+          return resolve(response)
+        }
+      })
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
 }
 
 module.exports = DocumentClient
