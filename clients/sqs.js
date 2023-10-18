@@ -2,67 +2,23 @@ const { SQSClient, ReceiveMessageCommand, DeleteMessageCommand, SendMessageComma
 const snsClient = new SQSClient();
 
 class SQS {
-  sendMessage (params, callback) {
-    return new Promise((resolve, reject) => {
+ async sendMessage (params, callback) {
       const command = new SendMessageCommand(params)
-      const response =  snsClient.send(command).then(response=>{
-        resolve(response)
-      }).catch(err=>{
-        reject(err)
-      })
-    }).then(result => {
-      if (callback && typeof callback === 'function') {
-        callback(null, result)
-      }
-      return result
-    }).catch(error => {
-      if (callback && typeof callback === 'function') {
-        callback(error, null)
-      }
-      return Promise.reject(error)
-    })
+      const response =  await snsClient.send(command)
+      return response
   }
 
-  receiveMessage (params, callback) {
-    return new Promise((resolve, reject) => {
-      const command = new ReceiveMessageCommand(params)
-      const response =  snsClient.send(command).then(response=>{
-        resolve(response)
-      }).catch(err=>{
-        reject(err)
-      })
-    }).then(result => {
-      if (callback && typeof callback === 'function') {
-        callback(null, result)
-      }
-      return result
-    }).catch(error => {
-      if (callback && typeof callback === 'function') {
-        callback(error, null)
-      }
-      return Promise.reject(error)
-    })
-  }
+  async receiveMessage (params, callback) {
+    const command = new ReceiveMessageCommand(params)
+    const response = await  snsClient.send(command)
+    return response
+}
 
-  deleteMessage (params, callback) {
-    return new Promise((resolve, reject) => {
+
+ async deleteMessage (params, callback) {
       const command = new DeleteMessageCommand(params)
-      const response =  snsClient.send(command).then(response=>{
-        resolve(response)
-      }).catch(err=>{
-        reject(err)
-      })
-    }).then(result => {
-      if (callback && typeof callback === 'function') {
-        callback(null, result)
-      }
-      return result
-    }).catch(error => {
-      if (callback && typeof callback === 'function') {
-        callback(error, null)
-      }
-      return Promise.reject(error)
-    })
+      const response =  await snsClient.send(command)
+      return response
   }
 }
 
