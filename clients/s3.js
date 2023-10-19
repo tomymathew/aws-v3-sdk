@@ -1,4 +1,4 @@
-const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand, DeleteObjectsCommand, CreateMultipartUploadCommand, CompleteMultipartUploadCommand } = require('@aws-sdk/client-s3')
+const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand, DeleteObjectsCommand, CreateMultipartUploadCommand, CompleteMultipartUploadCommand, UploadPartCommand } = require('@aws-sdk/client-s3')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 const client = new S3Client({})
 
@@ -18,6 +18,15 @@ class S3 {
         const Expires = params.Expires
         delete params.Expires
         const command = new PutObjectCommand(params)
+        getSignedUrl(client, command, { expiresIn: Expires }).then(url => {
+          resolve(url)
+        }).catch(err => {
+          resolve(err)
+        })
+      } else if (type === 'uploadPart') {
+        const Expires = params.Expires
+        delete params.Expires
+        const command = new UploadPartCommand(params)
         getSignedUrl(client, command, { expiresIn: Expires }).then(url => {
           resolve(url)
         }).catch(err => {

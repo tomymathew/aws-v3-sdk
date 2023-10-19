@@ -273,7 +273,7 @@ class DocumentClient {
   batchGetAsync (params, callback) {
     return new Promise((resolve, reject) => {
       const docClient = DynamoDBDocument.from(new DynamoDB())
-      docClient.batchGet(params, function (err, data) {
+      docClient.batchGet(params, function (err, response) {
         if (err) reject(err)
         else {
           return resolve(response)
