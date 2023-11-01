@@ -1,6 +1,7 @@
 const { Client, Connection } = require('@opensearch-project/opensearch')
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const aws4 = require('aws4')
+const logger = require('../utils/logger')
 
 const { REGION, ELASTICSEARCH_AUDITS_ENDPOINT } = process.env
 
@@ -32,23 +33,28 @@ const getClient = async () => {
 }
 
 exports.sendAuditsReqToES = async (method, index, type, id, data) => {
-  const client = await getClient()
-  if (method === 'DELETE') {
-    const response = await client.delete({
-      index,
-      type,
-      id
-    })
-    return response.body
-  } else {
-    const response = await client.index({
-      id,
-      index,
-      type,
-      body: data,
-      refresh: true
+  try {
+    const client = await getClient()
+    if (method === 'DELETE') {
+      const response = await client.delete({
+        index,
+        type,
+        id
+      })
+      return response.body
+    } else {
+      const response = await client.index({
+        id,
+        index,
+        type,
+        body: data,
+        refresh: true
 
-    })
-    return response.body
+      })
+      return response.body
+    }
+  } catch (error) {
+    logger.error('ES Error', { error })
+    return error
   }
 }

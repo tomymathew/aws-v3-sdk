@@ -1,6 +1,7 @@
 const { Client, Connection } = require('@opensearch-project/opensearch')
 const { defaultProvider } = require('@aws-sdk/credential-provider-node')
 const aws4 = require('aws4')
+const logger = require('../utils/logger')
 
 const { REGION, ELASTICSEARCH_ENDPOINT } = process.env
 
@@ -61,6 +62,7 @@ exports.sendReqToES = async (method, index, type, id, data) => {
       return response.body
     }
   } catch (error) {
+    logger.error('ES Error', { error })
     return error
   }
 }
