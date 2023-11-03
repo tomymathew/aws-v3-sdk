@@ -34,17 +34,27 @@ const getClient = async () => {
 exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
   const client = await getClient()
   return new Promise((resolve, reject) => {
-    let body = { query }
-    if (sort) {
-      body = { query, sort }
+    const body = {}
+    if (query) {
+      body.query = query
     }
-    client.search({
+    if (sort) {
+      body.sort = sort
+    }
+    const options = {
       index,
-      from,
-      size,
-      _source,
       body
-    }).then(response => {
+    }
+    if (from) {
+      options.from = from
+    }
+    if (size) {
+      options.size = size
+    }
+    if (_source) {
+      options._source = size
+    }
+    client.search(options).then(response => {
       logger.debug(response, { response })
       const data = response.body.hits.hits
       const totalCount = response.body.hits.total
