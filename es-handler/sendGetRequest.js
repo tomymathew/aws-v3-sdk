@@ -63,8 +63,12 @@ exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
       })
       resolve({ items: mappedData, data: mappedData, totalCount })
     }).catch(err => {
-      logger.error('ES sendGetRequest Error', { err })
-      reject(err)
+      if (err) {
+        logger.error('ES sendGetRequest Error', { err })
+        reject(err)
+      } else {
+        resolve({ items: [], data: [], totalCount: 0 })
+      }
     })
   })
 }
@@ -88,9 +92,13 @@ exports.sendGetRequestCallback = async (index, query, from, size, sort, callback
         return item._source
       })
       callback(null, { items: mappedData, data: mappedData, totalCount })
-    }).catch(e => {
-      logger.error('ES Error', { e })
-      reject(e)
+    }).catch(err => {
+      if (err) {
+        logger.error('ES Error', { err })
+        reject(err)
+      } else {
+        resolve({ items: [], data: [], totalCount: 0 })
+      }
     })
   })
 }
@@ -104,9 +112,13 @@ exports.getCount = async (index, query) => {
     }).then(response => {
       const data = response.body
       resolve({ data })
-    }).catch(e => {
-      logger.error('ES Error', { e })
-      reject(e)
+    }).catch(err => {
+      if (err) {
+        logger.error('ES Error', { err })
+        reject(err)
+      } else {
+        resolve({ items: [], data: [], totalCount: 0 })
+      }
     })
   })
 }
@@ -119,9 +131,13 @@ exports.multiSearch = async (query) => {
       body
     }).then(response => {
       resolve(response)
-    }).catch(e => {
-      logger.error('ES sendGetRequest Error', { e })
-      reject(e)
+    }).catch(err => {
+      if (err) {
+        logger.error('ES Error', { err })
+        reject(err)
+      } else {
+        resolve({ items: [], data: [], totalCount: 0 })
+      }
     })
   })
 }
