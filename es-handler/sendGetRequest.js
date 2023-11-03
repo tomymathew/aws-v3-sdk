@@ -76,16 +76,24 @@ exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
 exports.sendGetRequestCallback = async (index, query, from, size, sort, callback) => {
   const client = await getClient()
   return new Promise((resolve, reject) => {
-    let body = { query }
-    if (sort) {
-      body = { query, sort }
+    const body = {}
+    if (query) {
+      body.query = query
     }
-    client.search({
+    if (sort) {
+      body.sort = sort
+    }
+    const options = {
       index,
-      from,
-      size,
       body
-    }).then(response => {
+    }
+    if (from) {
+      options.from = from
+    }
+    if (size) {
+      options.size = size
+    }
+    client.search(options).then(response => {
       const data = response.body.hits.hits
       const totalCount = response.body.hits.total
       const mappedData = data.map(item => {
