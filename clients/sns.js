@@ -1,13 +1,21 @@
-const { SNSClient, PublishCommand } = require("@aws-sdk/client-sns");
-const snsClient = new SNSClient({});
+const { SNSClient, PublishCommand } = require('@aws-sdk/client-sns')
+
+const { Agent } = require('https')
+const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
+
+const snsClient = new SNSClient({
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: new Agent({ keepAlive: false })
+  })
+})
 
 class SNS {
   publish (params, callback) {
     return new Promise((resolve, reject) => {
-      let publishCommand = new PublishCommand(params)
-      const response =  snsClient.send(publishCommand).then(response=>{
+      const publishCommand = new PublishCommand(params)
+      snsClient.send(publishCommand).then(response => {
         resolve(response)
-      }).catch(err=>{
+      }).catch(err => {
         reject(err)
       })
     }).then(result => {

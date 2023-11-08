@@ -1,12 +1,19 @@
 const { LambdaClient, InvokeCommand, InvokeAsyncCommand } = require('@aws-sdk/client-lambda')
 const { toUtf8, fromUtf8 } = require('@aws-sdk/util-utf8-node')
 
+const { Agent } = require('https')
+const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
+
+const keepAliveOptions = new NodeHttpHandler({
+  httpsAgent: new Agent({ keepAlive: false })
+})
+
 class Lambda {
   constructor (region, session) {
     if (region && session) {
-      this.client = new LambdaClient({ region, credentials: session })
+      this.client = new LambdaClient({ region, credentials: session, requestHandler: keepAliveOptions })
     } else {
-      this.client = new LambdaClient()
+      this.client = new LambdaClient({ requestHandler: keepAliveOptions })
     }
   }
 

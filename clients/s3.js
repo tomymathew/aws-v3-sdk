@@ -1,6 +1,14 @@
 const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand, DeleteObjectsCommand, CreateMultipartUploadCommand, CompleteMultipartUploadCommand, UploadPartCommand } = require('@aws-sdk/client-s3')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
-const client = new S3Client({})
+
+const { Agent } = require('https')
+const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
+
+const client = new S3Client({
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: new Agent({ keepAlive: false })
+  })
+})
 
 class S3 {
   getSignedUrl (type, params, callback) {

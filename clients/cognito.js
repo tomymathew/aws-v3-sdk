@@ -15,7 +15,7 @@ class CognitoIdentityServiceProvider {
   }
 
   async adminCreateUser (params, callback) {
-    const command = new AdminCreateUserCommand(params);
+    const command = new AdminCreateUserCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
@@ -24,7 +24,7 @@ class CognitoIdentityServiceProvider {
   }
 
   async adminSetUserMFAPreference (params, callback) {
-    const command = new AdminSetUserMFAPreferenceCommand(params);
+    const command = new AdminSetUserMFAPreferenceCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
@@ -33,7 +33,7 @@ class CognitoIdentityServiceProvider {
   }
 
   async adminDeleteUser (params, callback) {
-    const command = new AdminDeleteUserCommand(params);
+    const command = new AdminDeleteUserCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
@@ -42,7 +42,7 @@ class CognitoIdentityServiceProvider {
   }
 
   async adminEnableUser (params, callback) {
-    const command = new AdminEnableUserCommand(params);
+    const command = new AdminEnableUserCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
@@ -50,9 +50,8 @@ class CognitoIdentityServiceProvider {
     })
   }
 
-
   async adminDisableUser (params, callback) {
-    const command = new AdminDisableUserCommand(params);
+    const command = new AdminDisableUserCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
@@ -61,14 +60,13 @@ class CognitoIdentityServiceProvider {
   }
 
   async adminUserGlobalSignOut (params, callback) {
-    const command = new AdminUserGlobalSignOutCommand(params);
+    const command = new AdminUserGlobalSignOutCommand(params)
     this.client.send(command).then(data => {
       callback(null, data)
     }).catch(err => {
       callback(err)
     })
   }
-
 }
 
 module.exports = CognitoIdentityServiceProvider
