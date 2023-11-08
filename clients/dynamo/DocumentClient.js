@@ -1,8 +1,16 @@
 const { DynamoDB, DynamoDBClient } = require('@aws-sdk/client-dynamodb')
 const { DynamoDBDocument, DynamoDBDocumentClient, GetCommand, BatchWriteCommand, PutCommand, QueryCommand, ScanCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb')
-const ddb = new DynamoDBClient()
-const documentClient = DynamoDBDocumentClient.from(ddb)
 
+const { Agent } = require('https')
+const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
+
+const ddb = new DynamoDBClient({
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: new Agent({ keepAlive: false })
+  })
+})
+
+const documentClient = DynamoDBDocumentClient.from(ddb)
 class DocumentClient {
   get (params, callback) {
     const getCommand = new GetCommand(params)
@@ -60,7 +68,7 @@ class DocumentClient {
   }
 
   delete (params, callback) {
-    const docClient = DynamoDBDocument.from(new DynamoDB())
+    const docClient = DynamoDBDocument.from(ddb)
     docClient.delete(params, (err, response) => {
       if (err) {
         return callback(err)
@@ -109,7 +117,7 @@ class DocumentClient {
   }
 
   batchGet (params, callback) {
-    const docClient = DynamoDBDocument.from(new DynamoDB())
+    const docClient = DynamoDBDocument.from(ddb)
 
     docClient.batchGet(params, function (err, data) {
       if (err) callback(err)
@@ -180,7 +188,6 @@ class DocumentClient {
           return resolve(null)
         }
       })
-      
     }).then(result => {
       if (callback && typeof callback === 'function') {
         callback(null, result)
@@ -225,7 +232,7 @@ class DocumentClient {
 
   deleteAsync (params, callback) {
     return new Promise((resolve, reject) => {
-      const docClient = DynamoDBDocument.from(new DynamoDB())
+      const docClient = DynamoDBDocument.from(ddb)
       docClient.delete(params, (err, response) => {
         if (err) {
           return resolve(err)
@@ -248,7 +255,7 @@ class DocumentClient {
 
   updateAsync (params, callback) {
     return new Promise((resolve, reject) => {
-      const docClient = DynamoDBDocument.from(new DynamoDB())
+      const docClient = DynamoDBDocument.from(ddb)
       docClient.update(params, (err, response) => {
         if (err) {
           return resolve(err)
@@ -269,10 +276,9 @@ class DocumentClient {
     })
   }
 
-
   batchGetAsync (params, callback) {
     return new Promise((resolve, reject) => {
-      const docClient = DynamoDBDocument.from(new DynamoDB())
+      const docClient = DynamoDBDocument.from(ddb)
       docClient.batchGet(params, function (err, response) {
         if (err) reject(err)
         else {
