@@ -1,6 +1,6 @@
 {
   "name": "aws-v3-sdk",
-  "version": "1.0.24",
+  "version": "1.0.26",
   "description": "AWS v3 SDK Utils",
   "main": "index.js",
   "scripts": {
