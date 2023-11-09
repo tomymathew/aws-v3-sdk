@@ -65,10 +65,8 @@ exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
     }).catch(err => {
       if (err) {
         logger.error('ES sendGetRequest Error', { err })
-        reject(err)
-      } else {
-        resolve({ items: [], data: [], totalCount: 0 })
       }
+      resolve({ items: [], data: [], totalCount: 0 })
     })
   })
 }
@@ -103,10 +101,8 @@ exports.sendGetRequestCallback = async (index, query, from, size, sort, callback
     }).catch(err => {
       if (err) {
         logger.error('ES Error', { err })
-        reject(err)
-      } else {
-        resolve({ items: [], data: [], totalCount: 0 })
       }
+      callback(null, { items: [], data: [], totalCount: 0 })
     })
   })
 }
@@ -119,14 +115,16 @@ exports.getCount = async (index, query) => {
       body: { query }
     }).then(response => {
       const data = response.body
-      resolve({ data })
+      if (data && data.hasOwnProperty('count')) {
+        resolve({ data })
+      } else {
+        resolve({ data: { count: 0 } })
+      }
     }).catch(err => {
       if (err) {
         logger.error('ES Error', { err })
-        reject(err)
-      } else {
-        resolve({ items: [], data: [], totalCount: 0 })
       }
+      resolve({ items: [], data: [], totalCount: 0 })
     })
   })
 }
@@ -142,10 +140,8 @@ exports.multiSearch = async (query) => {
     }).catch(err => {
       if (err) {
         logger.error('ES Error', { err })
-        reject(err)
-      } else {
-        resolve({ items: [], data: [], totalCount: 0 })
       }
+      resolve({ items: [], data: [], totalCount: 0 })
     })
   })
 }
