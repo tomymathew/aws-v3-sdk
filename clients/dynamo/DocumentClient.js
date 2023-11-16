@@ -116,6 +116,18 @@ class DocumentClient {
     })
   }
 
+  transactWrite (params, callback) {
+    const docClient = DynamoDBDocument.from(new DynamoDB())
+    docClient.transactWrite(params, function (err, data) {
+      if (err) {
+        callback(err)
+      }
+      else {
+        callback(null, data)
+      }
+    })
+  }
+
   batchGet (params, callback) {
     const docClient = DynamoDBDocument.from(ddb)
 
@@ -322,5 +334,29 @@ class DocumentClient {
     })
   }
 }
+
+  transactWriteAsync (params, callback) {
+    const docClient = DynamoDBDocument.from(new DynamoDB())
+    return new Promise((resolve, reject) => {
+      docClient.transactWrite(params, (err, response) => {
+        if (err || !response) {
+          return reject(err)
+        }
+        if (response) {
+          return resolve(response)
+        }
+      })
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
 
 module.exports = DocumentClient
