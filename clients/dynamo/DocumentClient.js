@@ -333,9 +333,8 @@ class DocumentClient {
       return Promise.reject(error)
     })
   }
-}
 
-  transactWriteAsync (params, callback) {
+    transactWriteAsync (params, callback) {
     const docClient = DynamoDBDocument.from(new DynamoDB())
     return new Promise((resolve, reject) => {
       docClient.transactWrite(params, (err, response) => {
@@ -358,5 +357,7 @@ class DocumentClient {
       return Promise.reject(error)
     })
   }
+}
+
 
 module.exports = DocumentClient
