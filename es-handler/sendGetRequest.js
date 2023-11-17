@@ -52,7 +52,7 @@ exports.sendGetRequest = async (index, query, from, size, sort, _source) => {
       options.size = size
     }
     if (_source) {
-      options._source = size
+      options._source = _source
     }
     client.search(options).then(response => {
       logger.debug(response, { response })
