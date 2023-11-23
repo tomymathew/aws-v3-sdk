@@ -1,14 +1,6 @@
-const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand, DeleteObjectsCommand, CreateMultipartUploadCommand, CompleteMultipartUploadCommand, UploadPartCommand } = require('@aws-sdk/client-s3')
+const { S3Client, GetObjectCommand, PutObjectCommand, HeadObjectCommand, ListObjectsCommand, DeleteObjectsCommand, CreateMultipartUploadCommand, CompleteMultipartUploadCommand, UploadPartCommand } = require('@aws-sdk/client-s3')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
-
-const { Agent } = require('https')
-const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
-
-const client = new S3Client({
-  requestHandler: new NodeHttpHandler({
-    httpsAgent: new Agent({ keepAlive: false })
-  })
-})
+const client = new S3Client({})
 
 class S3 {
   getSignedUrl (type, params, callback) {
@@ -128,6 +120,30 @@ class S3 {
     return new Promise((resolve, reject) => {
       const putObject = new PutObjectCommand(params)
       client.send(putObject, (err, data) => {
+        if (err || !data) {
+          resolve(err)
+        }
+        if (data) {
+          resolve(data)
+        }
+      })
+    }).then(result => {
+      if (callback && typeof callback === 'function') {
+        callback(null, result)
+      }
+      return result
+    }).catch(error => {
+      if (callback && typeof callback === 'function') {
+        callback(error, null)
+      }
+      return Promise.reject(error)
+    })
+  }
+
+  headObject (params, callback) {
+    return new Promise((resolve, reject) => {
+      const headObject = new HeadObjectCommand(params)
+      client.send(headObject, (err, data) => {
         if (err || !data) {
           resolve(err)
         }
