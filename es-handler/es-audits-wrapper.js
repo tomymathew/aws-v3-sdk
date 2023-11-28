@@ -48,7 +48,7 @@ exports.sendAuditsReqToES = async (method, index, type, id, data) => {
         index,
         type,
         body: data,
-        refresh: true
+        refresh: false
 
       })
       return response.body
