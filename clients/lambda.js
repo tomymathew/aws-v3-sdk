@@ -5,7 +5,10 @@ const { Agent } = require('https')
 const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
 
 const keepAliveOptions = new NodeHttpHandler({
-  httpsAgent: new Agent({ keepAlive: false })
+  httpsAgent: new Agent({
+    keepAlive: false,
+    maxSockets: 50
+  })
 })
 
 class Lambda {

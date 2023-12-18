@@ -6,7 +6,10 @@ const { NodeHttpHandler } = require('@aws-sdk/node-http-handler')
 
 const ddb = new DynamoDBClient({
   requestHandler: new NodeHttpHandler({
-    httpsAgent: new Agent({ keepAlive: false })
+    httpsAgent: new Agent({
+      keepAlive: false,
+      maxSockets: 50
+    })
   })
 })
 
