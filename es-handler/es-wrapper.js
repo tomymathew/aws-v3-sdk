@@ -28,7 +28,8 @@ const getClient = async () => {
   const cred = createAwsConnector(credentials, REGION)
   return new Client({
     ...cred,
-    node: host
+    node: host,
+    maxRetries: 0
   })
 }
 
@@ -39,7 +40,8 @@ exports.sendReqToES = async (method, index, type, id, data) => {
       const response = await client.delete({
         index,
         type,
-        id
+        id,
+        refresh: false
       })
       return response.body
     } else if (method === 'UPDATE') {
@@ -48,7 +50,17 @@ exports.sendReqToES = async (method, index, type, id, data) => {
         index,
         type,
         body: data,
-        refresh: true
+        refresh: false,
+        retry_on_conflict: 10
+      })
+      return response.body
+    } else if (method === 'UPDATE_BY_QUERY') {
+      const response = await client.updateByQuery({
+        index,
+        type,
+        body: data,
+        refresh: false,
+        retry_on_conflict: 10
       })
       return response.body
     } else {
@@ -57,7 +69,7 @@ exports.sendReqToES = async (method, index, type, id, data) => {
         index,
         type,
         body: data,
-        refresh: true
+        refresh: false
       })
       return response.body
     }
